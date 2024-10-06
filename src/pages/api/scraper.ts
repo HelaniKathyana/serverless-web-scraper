@@ -14,13 +14,14 @@ async function scrapeWebsite(url: string) {
         const $ = cheerio.load(data);
         const scrapedData: string[] = [];
 
-        $('h1').each((i, element) => {
-            scrapedData.push($(element).text());
+        $('.card-group .card a').each((i, element) => {
+            const link = $(element).attr('href');
+            scrapedData.push(link?link:'');
         });
 
-        $('p').each((i, element) => {
-            scrapedData.push($(element).text());
-        });
+        // $('p').each((i, element) => {
+        //     scrapedData.push($(element).text());
+        // });
 
         return scrapedData;
     } catch (error) {
@@ -35,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         // GET Request: Default scrape a hardcoded URL
         case 'GET':
             try {
-                const url = 'https://kaiding.se/forsaljning/2024/duvan-bok-kontor-ab-i-konkurs';
+                const url = 'https://kaiding.se/forsaljning';
                 const data = await scrapeWebsite(url);
                 res.status(200).json({ data });
             } catch (error: any) {
